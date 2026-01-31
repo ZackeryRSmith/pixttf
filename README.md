@@ -6,6 +6,9 @@
 #
 **PixTTF** is an app to create and edit pixel fonts powered by [Zig](https://github.com/ziglang/zig) and [DVUI](https://github.com/david-vanderson/dvui)
 
+> [!CAUTION]  
+> PixTTF is currently under active development. The codebase is in a pre-alpha state and is not yet functional.
+
 # Currently supported features
 - [ ] Import TTF
 - [ ] Export TTF
@@ -25,8 +28,10 @@
 
 
 # Compile
+<!-- will likely be needed in the future (stolen line from Pixi)
 > [!NOTE]
 > If you're on Linux ensure `gtk+3-devel` or similar is installed (for native file dialogs)
+-->
 
 - Install Zig 0.15.2
 - Clone Pixttf
