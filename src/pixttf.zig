@@ -1,8 +1,3 @@
-//! other potential names
-//!   - PixelTTF (pttf)
-//!   - Pixif
-//!   - PixelFontManager (pfm) [good for cli usage]
-
 const std = @import("std");
 const dvui = @import("dvui");
 
