@@ -9,18 +9,16 @@ const Editor = @This();
 const MenuBar = @import("MenuBar.zig");
 const StatusBar = @import("StatusBar.zig");
 
-// TODO: Worth moving all the panel logic to it's own file E.g. SideView.zig
-//       Might cause issues with window docking in the future though...
-const GlyphPanel = @import("panels/GlyphPanel.zig");
-const CharacterSetPanel = @import("panels/CharacterSetPanel.zig");
-const TextPreviewPanel = @import("panels/TextPreviewPanel.zig");
+const GlyphMenu = @import("menus/GlyphMenu.zig");
+const CharacterSetMenu = @import("menus/CharacterSetMenu.zig");
+const TextPreviewMenu = @import("menus/TextPreviewMenu.zig");
 
 menu_bar: *MenuBar,
 status_bar: *StatusBar,
 
-glyph_panel: *GlyphPanel,
-character_set_panel: *CharacterSetPanel,
-text_preview_panel: *TextPreviewPanel,
+glyph_menu: *GlyphMenu,
+character_set_menu: *CharacterSetMenu,
+text_preview_menu: *TextPreviewMenu,
 
 pub fn init(allocator: std.mem.Allocator) !Editor {
     std.log.info("creating pixtf.app.editor.menu_bar", .{});
@@ -31,34 +29,33 @@ pub fn init(allocator: std.mem.Allocator) !Editor {
     const status_bar: *StatusBar = try allocator.create(StatusBar);
     status_bar.* = StatusBar.init() catch unreachable;
 
-    std.log.info("creating pixtf.app.editor.panels.glyph_panel", .{});
-    const glyph_panel: *GlyphPanel = try allocator.create(GlyphPanel);
-    glyph_panel.* = GlyphPanel.init() catch unreachable;
+    std.log.info("creating pixtf.app.editor.menus.glyph_panel", .{});
+    const glyph_menu: *GlyphMenu = try allocator.create(GlyphMenu);
+    glyph_menu.* = GlyphMenu.init() catch unreachable;
 
-    std.log.info("creating pixtf.app.editor.panels.character_set_panel", .{});
-    const character_set_panel: *CharacterSetPanel = try allocator.create(CharacterSetPanel);
-    character_set_panel.* = CharacterSetPanel.init() catch unreachable;
+    std.log.info("creating pixtf.app.editor.menus.character_set_panel", .{});
+    const character_set_menu: *CharacterSetMenu = try allocator.create(CharacterSetMenu);
+    character_set_menu.* = CharacterSetMenu.init() catch unreachable;
 
-    std.log.info("creating pixtf.app.editor.panels.text_preview_panel", .{});
-    const text_preview_panel: *TextPreviewPanel = try allocator.create(TextPreviewPanel);
-    text_preview_panel.* = TextPreviewPanel.init() catch unreachable;
+    std.log.info("creating pixtf.app.editor.menus.text_preview_panel", .{});
+    const text_preview_menu: *TextPreviewMenu = try allocator.create(TextPreviewMenu);
+    text_preview_menu.* = TextPreviewMenu.init() catch unreachable;
 
     return .{
         .menu_bar = menu_bar,
         .status_bar = status_bar,
         // .canvas_panel = canvas_panel,
-        .glyph_panel = glyph_panel,
-        .character_set_panel = character_set_panel,
-        .text_preview_panel = text_preview_panel,
+        .glyph_menu = glyph_menu,
+        .character_set_menu = character_set_menu,
+        .text_preview_menu = text_preview_menu,
     };
 }
 
 pub fn deinit(editor: *Editor) void {
     editor.menu_bar.deinit();
-    editor.glyph_panel.deinit();
-    editor.character_set_panel.deinit();
-    editor.text_preview_panel.deinit();
-    //editor.canvas_panel.deinit();
+    editor.glyph_menu.deinit();
+    editor.character_set_menu.deinit();
+    editor.text_preview_menu.deinit();
     editor.status_bar.deinit();
 }
 
@@ -76,9 +73,9 @@ pub fn tick(editor: *Editor) !dvui.App.Result {
                 var vbox2 = dvui.box(@src(), .{ .dir = .vertical }, .{ .expand = .vertical, .style = .content, .min_size_content = .{ .w = 350 } });
                 defer vbox2.deinit();
 
-                try editor.glyph_panel.tick();
-                try editor.character_set_panel.tick();
-                try editor.text_preview_panel.tick();
+                try editor.glyph_menu.tick();
+                try editor.character_set_menu.tick();
+                try editor.text_preview_menu.tick();
             }
 
             var canvas = pixttf.canvasWidget(@src(), .{}, .{ .expand = .both, .style = .window });

@@ -1,22 +1,23 @@
-// TODO: I'd really like all the tabs to be replaced with just a box with text
+// TODO: I'd really like all the tabs to be replaced with just a box with text.
+//       Unless I find a reason for tabs they're overkill here.
 const std = @import("std");
 const builtin = @import("builtin");
 
 const pixttf = @import("../pixttf.zig");
 const dvui = @import("dvui");
 
-const CharacterSetPanel = @This();
+const CharacterSetMenu = @This();
 
-pub fn init() !CharacterSetPanel {
+pub fn init() !CharacterSetMenu {
     return .{};
 }
 
-pub fn deinit(character_set_panel: *CharacterSetPanel) void {
-    _ = character_set_panel;
+pub fn deinit(character_set_menu: *CharacterSetMenu) void {
+    _ = character_set_menu;
 }
 
-pub fn tick(character_set_panel: *CharacterSetPanel) !void {
-    _ = character_set_panel;
+pub fn tick(character_set_menu: *CharacterSetMenu) !void {
+    _ = character_set_menu;
 
     {
         var tabs = dvui.tabs(@src(), .{ .draw_focus = false }, .{ .expand = .horizontal });

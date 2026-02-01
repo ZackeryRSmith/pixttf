@@ -4,18 +4,18 @@ const builtin = @import("builtin");
 const pixttf = @import("../pixttf.zig");
 const dvui = @import("dvui");
 
-const TextPreviewPanel = @This();
+const GlyphMenu = @This();
 
-pub fn init() !TextPreviewPanel {
+pub fn init() !GlyphMenu {
     return .{};
 }
 
-pub fn deinit(text_preview_panel: *TextPreviewPanel) void {
-    _ = text_preview_panel;
+pub fn deinit(glyph_menu: *GlyphMenu) void {
+    _ = glyph_menu;
 }
 
-pub fn tick(text_preview_panel: *TextPreviewPanel) !void {
-    _ = text_preview_panel;
+pub fn tick(glyph_menu: *GlyphMenu) !void {
+    _ = glyph_menu;
 
     {
         var tabs = dvui.tabs(@src(), .{ .draw_focus = false }, .{ .expand = .horizontal });
@@ -27,7 +27,7 @@ pub fn tick(text_preview_panel: *TextPreviewPanel) !void {
         });
         defer tab.deinit();
 
-        dvui.labelNoFmt(@src(), "Text Preview", .{}, .{});
+        dvui.labelNoFmt(@src(), "Glyph", .{}, .{});
     }
 
     var border = dvui.Rect.all(1);
@@ -35,5 +35,5 @@ pub fn tick(text_preview_panel: *TextPreviewPanel) !void {
     var vbox = dvui.box(@src(), .{}, .{ .expand = .both, .background = true, .style = .window, .border = border, .role = .tab_panel });
     defer vbox.deinit();
 
-    dvui.labelNoFmt(@src(), "You'd better be looking at text", .{}, .{ .expand = .both, .gravity_x = 0.5, .gravity_y = 0.5 });
+    dvui.labelNoFmt(@src(), "This is so flippin glyph", .{}, .{ .expand = .both, .gravity_x = 0.5, .gravity_y = 0.5 });
 }
