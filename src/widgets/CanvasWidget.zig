@@ -1,4 +1,9 @@
+// TODO: Fix trackpad issues. MacOS is *okay* but no detection for trackpad
+//       input is done. Meaning a laptop with Windows will have issues. Pixi
+//       does this naive trackpad check too
+
 const std = @import("std");
+const builtin = @import("builtin");
 const dvui = @import("dvui");
 const pixttf = @import("../pixttf.zig");
 
@@ -85,10 +90,6 @@ pub fn processEvents(self: *CanvasWidget) void {
                         dvui.dragEnd();
                     }
                 } else if (mouse.action == .motion) {
-                    if (mouse.button.touch()) {
-                        // eat touch motion events so they don't scroll
-                        e.handle(@src(), self.scroll_container.data());
-                    }
                     if (dvui.captured(self.scroll_container.data().id)) {
                         if (dvui.dragging(mouse.p, null)) |dps| {
                             e.handle(@src(), self.scroll_container.data());
@@ -97,13 +98,38 @@ pub fn processEvents(self: *CanvasWidget) void {
                             dvui.refresh(null, @src(), self.scroll_container.data().id);
                         }
                     }
+                } else if (mouse.action == .wheel_x) {
+                    // NOTE: We capture just to ignore here. If we don't
+                    //       the user can scroll & zoom at the same time.
+                    if (builtin.os.tag == .macos)
+                        if (mouse.mod.matchKeyBind(.{ .command = true }))
+                            e.handle(@src(), self.scroll_container.data());
                 } else if (mouse.action == .wheel_y) {
-                    e.handle(@src(), self.scroll_container.data());
                     const base: f32 = 1.01;
-                    const zoom_scale = @exp(@log(base) * mouse.action.wheel_y);
-                    if (zoom_scale != 1.0) {
-                        zoom *= zoom_scale;
-                        zoom_point = mouse.p;
+
+                    // TODO: There is likely a better way to handle this.
+                    //       MacOS != Touchpad, 100% of the time
+                    if (builtin.os.tag == .macos) {
+                        // TODO: Would like gesture support but this seems
+                        //       to be a dvui limitation as of now.
+                        if (mouse.mod.matchKeyBind(.{ .command = true })) {
+                            if (mouse.action == .wheel_y) {
+                                const zoom_scale = @exp(@log(base) * -mouse.action.wheel_y);
+                                if (zoom_scale != 1.0) {
+                                    zoom *= zoom_scale;
+                                    zoom_point = mouse.p;
+                                }
+                            }
+                        }
+                    } else {
+                        e.handle(@src(), self.scroll_container.data());
+                        if (mouse.action == .wheel_y) {
+                            const zoom_scale = @exp(@log(base) * mouse.action.wheel_y);
+                            if (zoom_scale != 1.0) {
+                                zoom *= zoom_scale;
+                                zoom_point = mouse.p;
+                            }
+                        }
                     }
                 }
             },
