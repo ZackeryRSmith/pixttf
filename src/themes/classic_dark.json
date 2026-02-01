@@ -1,0 +1,18 @@
+{
+    "name": "Classic Dark",
+    "author": "ZackeryRSmith",
+    "version": "1.0",
+    "license": "MIT",
+    "source": "https://github.com/ZackeryRSmith/pixttf/blob/main/src/themes/classic_dark.json",
+    "theme": {
+        "focus": "#ffffff",
+        "fill": "#ffffff",
+        "border": "#ffffff",
+        "control": {
+            "fill": "#ffffff"
+        },
+        "window": {
+            "fill": "#ffffff"
+        }
+    }
+}

@@ -6,6 +6,7 @@ const dvui = @import("dvui");
 
 const App = @This();
 const Editor = pixttf.Editor;
+const Theme = @import("Theme.zig");
 
 allocator: std.mem.Allocator = undefined,
 window: *dvui.Window = undefined,
@@ -26,6 +27,17 @@ pub fn init(window: *dvui.Window) !void {
     std.log.info("creating pixtf.editor", .{});
     pixttf.editor = try allocator.create(Editor);
     pixttf.editor.* = try Editor.init(allocator);
+
+    std.log.info("loading classic_dark theme", .{});
+    var theme = try Theme.fromJson(allocator, "/Users/zackerysmith/Projects/Zig/pixttf/src/themes/classic_dark.json");
+    defer theme.deinit();
+
+    // std.log.debug("\t\tname: {s}", .{theme.name});
+    // std.log.debug("\t\tauthor: {s}", .{theme.author});
+    // std.log.debug("\t\tversion: {s}", .{theme.version});
+    // std.log.debug("\t\tlicense: {s}", .{theme.license});
+    // std.log.debug("\t\tsource: {s}", .{theme.source});
+    // std.log.debug("\t\tdata: {any}", .{theme.data});
 }
 
 // Run as app is shutting down before dvui.Window.deinit()
