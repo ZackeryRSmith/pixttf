@@ -1,7 +1,7 @@
 .{
     .name = .pixttf,
     .version = "0.0.1",
-    .fingerprint = 0xccbeee2cf0d6015e, // changing this has security and trust implications.
+    .fingerprint = 0x3c33893e1237ef5e, // changing this has security and trust implications.
     .minimum_zig_version = "0.15.2",
     .dependencies = .{
         .dvui = .{
