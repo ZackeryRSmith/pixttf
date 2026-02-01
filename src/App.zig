@@ -17,23 +17,23 @@ pub fn init(window: *dvui.Window) !void {
     const allocator = gpa.allocator();
 
     std.log.info("creating pixtf.app", .{});
-    pixtf.app = try allocator.create(App);
-    pixtf.app.* = .{
+    pixttf.app = try allocator.create(App);
+    pixttf.app.* = .{
         .allocator = allocator,
         .window = window,
     };
 
     std.log.info("creating pixtf.editor", .{});
-    pixtf.editor = try allocator.create(Editor);
-    pixtf.editor.* = try Editor.init(allocator);
+    pixttf.editor = try allocator.create(Editor);
+    pixttf.editor.* = try Editor.init(allocator);
 }
 
 // Run as app is shutting down before dvui.Window.deinit()
 pub fn deinit() void {
-    pixtf.editor.deinit();
+    pixttf.editor.deinit();
 }
 
 // Run each frame to do normal UI
 pub fn frame() !dvui.App.Result {
-    return try pixtf.editor.tick();
+    return try pixttf.editor.tick();
 }
