@@ -15,7 +15,7 @@
 - [ ] Multiple sizes and weights for a single TTF
 - [ ] Unicode support
 - [ ] Character/glyph editor
-- [ ] Typical pixel art operations (draw, erase, dropper, bucket, selection, transformation, etc)
+- [ ] Typical pixel art operations (draw, erase, bucket, selection, transformation)
 - [ ] Text preview
 - [ ] Infinite undo and redo history
 - [ ] Auto-crash detection
