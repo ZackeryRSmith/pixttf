@@ -1,6 +1,6 @@
 const std = @import("std");
+const pixttf = @import("root");
 const dvui = @import("dvui");
-const pixttf = @import("pixttf.zig");
 
 const Theme = @This();
 

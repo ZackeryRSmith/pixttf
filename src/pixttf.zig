@@ -19,11 +19,12 @@ const title = std.fmt.comptimePrint("Pixtf {d}.{d}.{d}{s}", .{
 });
 
 // modules
-pub const App = @import("App.zig");
-pub const Editor = @import("Editor.zig");
+pub const App = @import("editor/App.zig");
+pub const Editor = @import("editor/Editor.zig");
 
+// TODO: might make more sense for this to be a file under editor/widgets
 // widgets
-pub const CanvasWidget = @import("widgets/CanvasWidget.zig");
+pub const CanvasWidget = @import("editor/widgets/CanvasWidget.zig");
 pub fn canvas(src: std.builtin.SourceLocation, init_opts: CanvasWidget.InitOpts, opts: dvui.Options) *CanvasWidget {
     var ret = dvui.widgetAlloc(CanvasWidget);
     ret.init(src, init_opts, opts);
@@ -33,7 +34,7 @@ pub fn canvas(src: std.builtin.SourceLocation, init_opts: CanvasWidget.InitOpts,
     return ret;
 }
 
-pub const RadialMenuWidget = @import("widgets/RadialMenuWidget.zig");
+pub const RadialMenuWidget = @import("editor/widgets/RadialMenuWidget.zig");
 pub fn radialMenu(src: std.builtin.SourceLocation, init_opts: RadialMenuWidget.InitOpts, opts: dvui.Options) *RadialMenuWidget {
     var ret = dvui.widgetAlloc(RadialMenuWidget);
     ret.init(src, init_opts, opts);

@@ -1,7 +1,6 @@
 const std = @import("std");
 const builtin = @import("builtin");
-
-const pixttf = @import("pixttf.zig");
+const pixttf = @import("root");
 const dvui = @import("dvui");
 
 const App = pixttf.App;
@@ -80,9 +79,6 @@ pub fn tick(editor: *Editor) !dvui.App.Result {
 
             var canvas = pixttf.canvas(@src(), .{}, .{ .expand = .both, .style = .window });
             defer canvas.deinit();
-
-            var radial_menu = pixttf.radialMenu(@src(), .{}, .{});
-            defer radial_menu.deinit();
         }
         try editor.status_bar.tick();
     }

@@ -2,8 +2,7 @@
 //       Unless I find a reason for tabs they're overkill here.
 const std = @import("std");
 const builtin = @import("builtin");
-
-const pixttf = @import("../pixttf.zig");
+const pixttf = @import("root");
 const dvui = @import("dvui");
 
 const CharacterSetMenu = @This();
