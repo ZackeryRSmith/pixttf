@@ -28,7 +28,6 @@ pub fn init(window: *dvui.Window) !void {
     pixttf.editor.* = try Editor.init(allocator);
 
     pixttf.theme = try Theme.fromJson(allocator, "assets/themes/classic_dark.json");
-    std.debug.print("{any}", .{pixttf.theme.color});
 }
 
 // Run as app is shutting down before dvui.Window.deinit()

@@ -1,6 +1,7 @@
 // TODO: Fix trackpad issues. MacOS is *okay* but no detection for trackpad
 //       input is done. Meaning a laptop with Windows will have issues. Pixi
 //       does this naive trackpad check too
+// TODO: Really gotta break this file down a bit more.
 
 const std = @import("std");
 const builtin = @import("builtin");
@@ -27,25 +28,14 @@ screen_rect_scale: dvui.RectScale = .{},
 scroll_info: *dvui.ScrollInfo = undefined,
 hbox: dvui.BoxWidget = undefined,
 
-// TODO: ask David the best way to pass around an object like this to the next frame
-// buffer: std.ArrayList(PixelPosition) = undefined,
-
-// TODO: Would be useful to show in the editor the limitations of the software.
-//       It's very unlikely and unpractical for a pixel font to be larger than
-//       this though. Maybe clicking outside of the drawable space gives a message like:
-//       "You cannot draw outside this space, this is a limitation builtin to PixTTF.
-//        if you need space outside of this area please file an issue or contact me at ..."
-const PixelPosition = struct {
-    x: i16,
-    y: i16,
-};
-
 pub var defaults: dvui.Options = .{
     .name = "Canvas",
     .background = true,
     .style = .control,
 };
 pub const InitOpts = struct {
+    allocator: std.mem.Allocator,
+    strokes: *std.ArrayList(pixttf.Editor.PixelPosition),
     was_allocated_on_widget_stack: bool = false,
 };
 
@@ -99,7 +89,20 @@ pub fn processEvents(self: *CanvasWidget) void {
                     const pixel_x: i16 = @intFromFloat(@floor(canvas_point.x / CELL_SIZE));
                     const pixel_y: i16 = @intFromFloat(@floor(-canvas_point.y / CELL_SIZE));
                     std.log.debug("CLICKED AT ({}, {})", .{ pixel_x, pixel_y });
-                    // TODO: add clicked point to array
+                    // Check if the pixel already exists
+                    const existing = for (self.init_opts.strokes.items, 0..) |stroke, i| {
+                        if (stroke.x == pixel_x and stroke.y == pixel_y) break i;
+                    } else null;
+
+                    if (existing) |i| {
+                        _ = self.init_opts.strokes.orderedRemove(i);
+                    } else {
+                        self.init_opts.strokes.append(self.init_opts.allocator, .{
+                            .x = pixel_x,
+                            .y = pixel_y,
+                        }) catch unreachable;
+                    }
+                    std.log.debug("STROKES: {any}", .{self.init_opts.strokes});
                 } else if (mouse.action == .press and mouse.button == .right) {
                     e.handle(@src(), self.scroll_container.data());
                     // TODO: pull up toolbox radial
@@ -162,7 +165,6 @@ pub fn processEvents(self: *CanvasWidget) void {
     }
 
     if (zoom != 1.0 and self.scale.* * zoom > SCALE_MIN and self.scale.* * zoom < SCALE_MAX) {
-        std.debug.print("CALC: {any} * {any} = {any}\n", .{ self.scale.*, zoom, self.scale.* * zoom });
         // scale around mouse point
         // first get data point of mouse
         const prev_point = self.screen_rect_scale.pointFromPhysical(zoom_point);
@@ -277,6 +279,29 @@ pub fn draw(self: *CanvasWidget) void {
     // horizontal axis
     self.drawStroke(0, origin_screen_y, origin_screen_x - 3, origin_screen_y, 3, .gray);
     self.drawStroke(origin_screen_x, origin_screen_y, view_w, origin_screen_y, 3, .white);
+
+    self.drawStrokes();
+}
+
+fn drawStrokes(self: *CanvasWidget) void {
+    const scaled_cell = self.scale.* * CELL_SIZE;
+
+    for (self.init_opts.strokes.items) |stroke| {
+        const fx: f32 = @floatFromInt(stroke.x);
+        const fy: f32 = @floatFromInt(stroke.y);
+
+        const screen_x = fx * scaled_cell - self.origin.x;
+        const screen_y = -(fy + 1.0) * scaled_cell - self.origin.y;
+
+        const tl = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x, .y = screen_y });
+        const tr = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x + scaled_cell, .y = screen_y });
+        const br = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x + scaled_cell, .y = screen_y + scaled_cell });
+        const bl = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x, .y = screen_y + scaled_cell });
+
+        dvui.Path.fillConvex(.{
+            .points = &.{ tl, tr, br, bl },
+        }, .{ .color = .white });
+    }
 }
 
 fn drawStroke(self: *CanvasWidget, x1: f32, y1: f32, x2: f32, y2: f32, thickness: f32, color: dvui.Color) void {
