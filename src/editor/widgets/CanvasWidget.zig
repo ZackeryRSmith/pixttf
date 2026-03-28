@@ -40,7 +40,7 @@ const PixelPosition = struct {
 pub var defaults: dvui.Options = .{
     .name = "Canvas",
     .background = true,
-    .style = .window,
+    .style = .control,
 };
 pub const InitOpts = struct {
     was_allocated_on_widget_stack: bool = false,

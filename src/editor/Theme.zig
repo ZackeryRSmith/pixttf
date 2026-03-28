@@ -66,11 +66,7 @@ fn dupeStringOrDefault(allocator: std.mem.Allocator, object: std.json.ObjectMap,
 fn dvuiThemeFromJson(comptime T: type, value: *T, object: std.json.ObjectMap) void {
     inline for (std.meta.fields(T)) |field| {
         if (object.get(field.name)) |json_val| {
-            if (field.type == dvui.Color) {
-                if (json_val == .string) {
-                    @field(value, field.name) = dvui.Color.tryFromHex(json_val.string) catch @field(value, field.name);
-                }
-            } else if (field.type == ?dvui.Color) {
+            if (field.type == dvui.Color or field.type == ?dvui.Color) {
                 if (json_val == .string) {
                     @field(value, field.name) = dvui.Color.tryFromHex(json_val.string) catch @field(value, field.name);
                 }

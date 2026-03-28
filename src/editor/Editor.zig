@@ -77,7 +77,7 @@ pub fn tick(editor: *Editor) !dvui.App.Result {
                 try editor.text_preview_menu.tick();
             }
 
-            var canvas = pixttf.canvas(@src(), .{}, .{ .expand = .both, .style = .window });
+            var canvas = pixttf.canvas(@src(), .{}, .{ .expand = .both, .style = .content });
             defer canvas.deinit();
 
             // var radial_menu = pixttf.radialMenu(@src(), .{}, .{});

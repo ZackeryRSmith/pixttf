@@ -5,7 +5,7 @@
   "license": "MIT",
   "source": "https://github.com/ZackeryRSmith/pixttf/blob/main/src/themes/classic_dark.json",
   "theme": {
-    "fill": "#ff0000",
+    "fill": "#3a4856",
     "fill_hover": "#ffffff",
     "fill_press": "#ffffff",
     "text": "#ffffff",
@@ -22,7 +22,7 @@
       "border": "#ffffff"
     },
     "window": {
-      "fill": "#ff0000",
+      "fill": "#488cbf",
       "fill_hover": "#ffffff",
       "fill_press": "#ffffff",
       "text": "#ffffff",

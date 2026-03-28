@@ -29,9 +29,6 @@ pub fn init(window: *dvui.Window) !void {
 
     var theme = try Theme.fromJson(allocator, "assets/themes/classic_dark.json");
     theme.apply();
-
-    // std.debug.print("Okay so heres the real deal man: {any}", .{theme.data.fill});
-    std.debug.print("Okay so heres the real deal man: {any}", .{theme.data.window.fill});
 }
 
 // Run as app is shutting down before dvui.Window.deinit()
