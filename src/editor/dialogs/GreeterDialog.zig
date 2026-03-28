@@ -1,6 +1,6 @@
 const std = @import("std");
+const pixttf = @import("pixttf");
 const dvui = @import("dvui");
-const pixttf = @import("../pixttf.zig");
 
 const GreeterDialog = @This();
 
@@ -11,7 +11,7 @@ pub fn show() bool {
 }
 
 // from dvui/Examples.zig
-// NOTE: this should be removed and is only here for refrence
+// TODO: this should be removed and is only here for refrence
 // pub fn dialogDirect() void {
 //     const uniqueId = dvui.parentGet().extendId(@src(), 0);
 //     const allow_resize = dvui.dataGetPtrDefault(null, uniqueId, "allow_resize", bool, true);
