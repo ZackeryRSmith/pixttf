@@ -9,6 +9,9 @@ const dvui = @import("dvui");
 
 const CanvasWidget = @This();
 
+// TODO: should be changed to be less "hacky"
+const SCALE_MIN = 0.15;
+const SCALE_MAX = 15;
 /// cell size in pixels
 const CELL_SIZE = 50;
 
@@ -158,7 +161,8 @@ pub fn processEvents(self: *CanvasWidget) void {
         }
     }
 
-    if (zoom != 1.0) {
+    if (zoom != 1.0 and self.scale.* * zoom > SCALE_MIN and self.scale.* * zoom < SCALE_MAX) {
+        std.debug.print("CALC: {any} * {any} = {any}\n", .{ self.scale.*, zoom, self.scale.* * zoom });
         // scale around mouse point
         // first get data point of mouse
         const prev_point = self.screen_rect_scale.pointFromPhysical(zoom_point);
