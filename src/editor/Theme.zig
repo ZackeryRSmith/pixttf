@@ -70,7 +70,11 @@ fn dvuiThemeFromJson(comptime T: type, value: *T, object: std.json.ObjectMap) vo
                 if (json_val == .string) {
                     @field(value, field.name) = dvui.Color.tryFromHex(json_val.string) catch @field(value, field.name);
                 }
-            } else if (@typeInfo(field.type) == .@"struct") {
+            } else if (field.type == ?dvui.Color) {
+                if (json_val == .string) {
+                    @field(value, field.name) = dvui.Color.tryFromHex(json_val.string) catch @field(value, field.name);
+                }
+            } else if (field.type == dvui.Theme.Style) {
                 if (json_val == .object) {
                     dvuiThemeFromJson(field.type, &@field(value, field.name), json_val.object);
                 }

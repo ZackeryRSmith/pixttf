@@ -5,13 +5,13 @@
   "license": "MIT",
   "source": "https://github.com/ZackeryRSmith/pixttf/blob/main/src/themes/classic_dark.json",
   "theme": {
-    "fill": "#ffffff",
+    "fill": "#ff0000",
     "fill_hover": "#ffffff",
     "fill_press": "#ffffff",
     "text": "#ffffff",
     "text_hover": "#ffffff",
     "text_press": "#ffffff",
-    "border": "#ffffff",
+    "border": "#ff0000",
     "control": {
       "fill": "#ffffff",
       "fill_hover": "#ffffff",
@@ -22,7 +22,7 @@
       "border": "#ffffff"
     },
     "window": {
-      "fill": "#ffffff",
+      "fill": "#ff0000",
       "fill_hover": "#ffffff",
       "fill_press": "#ffffff",
       "text": "#ffffff",
