@@ -16,7 +16,13 @@ pub fn deinit(status_bar: *StatusBar) void {
 pub fn tick(status_bar: *StatusBar) !void {
     _ = status_bar;
 
-    var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{ .style = .window, .background = true, .expand = .horizontal, .gravity_y = 1 });
+    var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{
+        .style = .window,
+        .background = true,
+        .expand = .horizontal,
+        .gravity_y = 1,
+        .color_fill = pixttf.theme.color.bg_panel,
+    });
     defer hbox.deinit();
 
     dvui.label(@src(), "no glyphs", .{}, .{});

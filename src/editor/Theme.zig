@@ -24,6 +24,8 @@ pub const Palette = struct {
     bg_canvas: dvui.Color = dvui.Color.white,
     /// elevated panels, sidebars, dialogs
     bg_panel: dvui.Color = dvui.Color.white,
+    /// elevated panels, sidebars, dialogs
+    bg_panel_alt: dvui.Color = dvui.Color.white,
     /// modal/popup overlay tint
     bg_overlay: dvui.Color = dvui.Color.white,
 

@@ -4,5 +4,10 @@
   "version": "1.0",
   "license": "MIT",
   "source": "https://github.com/ZackeryRSmith/pixttf/blob/main/src/themes/classic_dark.json",
-  "pallet": {}
+  "pallet": {
+    "bg_app": "#3a4856",
+    "bg_panel": "#5b6978",
+    "bg_panel_alt": "#488cbf",
+    "grid_bg": "#323f4d"
+  }
 }

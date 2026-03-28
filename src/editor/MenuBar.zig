@@ -18,7 +18,7 @@ pub fn tick(menubar: *MenuBar) !dvui.App.Result {
     _ = menubar;
 
     {
-        var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{ .style = .window, .background = true, .expand = .horizontal });
+        var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{ .style = .window, .color_fill = pixttf.theme.color.bg_panel_alt, .background = true, .expand = .horizontal });
         defer hbox.deinit();
 
         var m = dvui.menu(@src(), .horizontal, .{});

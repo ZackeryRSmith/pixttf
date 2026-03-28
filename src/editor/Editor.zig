@@ -90,17 +90,33 @@ pub fn deinit(self: *Editor) void {
 }
 
 pub fn tick(self: *Editor) !dvui.App.Result {
-    var vbox = dvui.box(@src(), .{}, .{ .expand = .both, .style = .content });
+    var vbox = dvui.box(@src(), .{}, .{
+        .expand = .both,
+        .style = .content,
+        .color_fill = pixttf.theme.color.bg_app,
+        .background = true,
+    });
     defer vbox.deinit();
     {
         const res = try self.menu_bar.tick();
         if (res != .ok) return res;
 
         {
-            var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{ .expand = .both, .style = .content });
+            var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{
+                .expand = .both,
+                .style = .content,
+                .color_fill = pixttf.theme.color.bg_app,
+                .background = true,
+            });
             defer hbox.deinit();
             {
-                var vbox2 = dvui.box(@src(), .{ .dir = .vertical }, .{ .expand = .vertical, .style = .content, .min_size_content = .{ .w = 350 } });
+                var vbox2 = dvui.box(@src(), .{ .dir = .vertical }, .{
+                    .expand = .vertical,
+                    .style = .content,
+                    .color_fill = pixttf.theme.color.bg_app,
+                    .background = true,
+                    .min_size_content = .{ .w = 350 },
+                });
                 defer vbox2.deinit();
 
                 try self.glyph_menu.tick();

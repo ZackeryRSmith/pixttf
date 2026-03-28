@@ -30,12 +30,12 @@ pub fn init(window: *dvui.Window) !void {
     pixttf.theme = try Theme.fromJson(allocator, "assets/themes/classic_dark.json");
 }
 
-// Run as app is shutting down before dvui.Window.deinit()
+// run as app is shutting down before dvui.Window.deinit()
 pub fn deinit() void {
     pixttf.editor.deinit();
 }
 
-// Run each frame to do normal UI
+// run each frame to do normal UI
 pub fn frame() !dvui.App.Result {
     return try pixttf.editor.tick();
 }

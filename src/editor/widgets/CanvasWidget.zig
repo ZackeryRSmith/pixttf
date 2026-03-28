@@ -43,7 +43,8 @@ pub fn init(self: *CanvasWidget, src: std.builtin.SourceLocation, init_opts: Ini
     self.* = .{
         .init_opts = init_opts,
     };
-    const options = defaults.override(opts);
+    var options = defaults.override(opts);
+    options.color_fill = pixttf.theme.color.grid_bg;
 
     self.hbox.init(src, .{ .dir = .horizontal }, options.themeOverride(opts.theme));
 
