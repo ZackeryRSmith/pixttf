@@ -31,8 +31,7 @@ pub fn fromJson(allocator: std.mem.Allocator, path: []const u8) !Theme {
 
     var theme = dvui.themeGet();
     if (root.get("theme")) |t_value| {
-        const t = t_value.object;
-        theme.fill = try colorFromObject(t, "fill", theme.fill);
+        dvuiThemeFromJson(dvui.Theme, &theme, t_value.object);
     }
 
     return .{
@@ -44,6 +43,10 @@ pub fn fromJson(allocator: std.mem.Allocator, path: []const u8) !Theme {
         .source = try dupeStringOrDefault(allocator, root, "source", "unknown"),
         .data = theme,
     };
+}
+
+pub fn apply(self: *Theme) void {
+    dvui.themeSet(self.data);
 }
 
 pub fn deinit(self: *Theme) void {
@@ -60,8 +63,18 @@ fn dupeStringOrDefault(allocator: std.mem.Allocator, object: std.json.ObjectMap,
     return try allocator.dupe(u8, str);
 }
 
-fn colorFromObject(object: std.json.ObjectMap, key: []const u8, fallback: dvui.Color) !dvui.Color {
-    const val = object.get(key) orelse return fallback;
-    if (val != .string) return fallback;
-    return dvui.Color.tryFromHex(val.string) catch fallback;
+fn dvuiThemeFromJson(comptime T: type, value: *T, object: std.json.ObjectMap) void {
+    inline for (std.meta.fields(T)) |field| {
+        if (object.get(field.name)) |json_val| {
+            if (field.type == dvui.Color) {
+                if (json_val == .string) {
+                    @field(value, field.name) = dvui.Color.tryFromHex(json_val.string) catch @field(value, field.name);
+                }
+            } else if (@typeInfo(field.type) == .@"struct") {
+                if (json_val == .object) {
+                    dvuiThemeFromJson(field.type, &@field(value, field.name), json_val.object);
+                }
+            }
+        }
+    }
 }

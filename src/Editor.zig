@@ -81,8 +81,8 @@ pub fn tick(editor: *Editor) !dvui.App.Result {
             var canvas = pixttf.canvas(@src(), .{}, .{ .expand = .both, .style = .window });
             defer canvas.deinit();
 
-            var radial_menu = pixttf.radialMenu(@src(), .{}, .{});
-            defer radial_menu.deinit();
+            // var radial_menu = pixttf.radialMenu(@src(), .{}, .{});
+            // defer radial_menu.deinit();
         }
         try editor.status_bar.tick();
     }
