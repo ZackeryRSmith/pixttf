@@ -20,6 +20,7 @@ const title = std.fmt.comptimePrint("Pixtf {d}.{d}.{d}{s}", .{
 
 // modules
 pub const App = @import("editor/App.zig");
+pub const Theme = @import("editor/Theme.zig");
 pub const Editor = @import("editor/Editor.zig");
 
 // TODO: might make more sense for this to be a file under editor/widgets
@@ -46,6 +47,7 @@ pub fn radialMenu(src: std.builtin.SourceLocation, init_opts: RadialMenuWidget.I
 
 // global pointers
 pub var app: *App = undefined;
+pub var theme: Theme = undefined;
 pub var editor: *Editor = undefined;
 
 pub const dvui_app: dvui.App = .{

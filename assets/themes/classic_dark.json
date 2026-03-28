@@ -4,49 +4,5 @@
   "version": "1.0",
   "license": "MIT",
   "source": "https://github.com/ZackeryRSmith/pixttf/blob/main/src/themes/classic_dark.json",
-  "theme": {
-    "fill": "#3a4856",
-    "fill_hover": "#ffffff",
-    "fill_press": "#ffffff",
-    "text": "#ffffff",
-    "text_hover": "#ffffff",
-    "text_press": "#ffffff",
-    "border": "#ff0000",
-    "control": {
-      "fill": "#ffffff",
-      "fill_hover": "#ffffff",
-      "fill_press": "#ffffff",
-      "text": "#ffffff",
-      "text_hover": "#ffffff",
-      "text_press": "#ffffff",
-      "border": "#ffffff"
-    },
-    "window": {
-      "fill": "#488cbf",
-      "fill_hover": "#ffffff",
-      "fill_press": "#ffffff",
-      "text": "#ffffff",
-      "text_hover": "#ffffff",
-      "text_press": "#ffffff",
-      "border": "#ffffff"
-    },
-    "highlight": {
-      "fill": "#ffffff",
-      "fill_hover": "#ffffff",
-      "fill_press": "#ffffff",
-      "text": "#ffffff",
-      "text_hover": "#ffffff",
-      "text_press": "#ffffff",
-      "border": "#ffffff"
-    },
-    "err": {
-      "fill": "#ffffff",
-      "fill_hover": "#ffffff",
-      "fill_press": "#ffffff",
-      "text": "#ffffff",
-      "text_hover": "#ffffff",
-      "text_press": "#ffffff",
-      "border": "#ffffff"
-    }
-  }
+  "pallet": {}
 }
