@@ -8,6 +8,9 @@
     "bg_app": "#3a4856",
     "bg_panel": "#5b6978",
     "bg_panel_alt": "#488cbf",
-    "grid_bg": "#323f4d"
+    "bg_panel_dark": "#1d242b",
+    "grid_bg": "#323f4d",
+    "border_focus": "#6d88a2",
+    "accent": "#488cbf"
   }
 }

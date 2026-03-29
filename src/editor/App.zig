@@ -28,6 +28,29 @@ pub fn init(window: *dvui.Window) !void {
     pixttf.editor = try allocator.create(Editor);
     pixttf.editor.* = try Editor.init(allocator);
 
+    std.log.info("adding typecast font family:", .{});
+    std.log.info("\t- pixelcode.ttf", .{});
+    try dvui.addFont("pixelcode", pixttf.assets.files.fonts.@"pixelcode.ttf", null);
+    std.log.info("\t- pixelcode-italic.ttf", .{});
+    try dvui.addFont("pixelcode-italic", pixttf.assets.files.fonts.@"pixelcode-italic.ttf", null);
+    std.log.info("\t- pixelcode-bold.ttf", .{});
+    try dvui.addFont("pixelcode-bold", pixttf.assets.files.fonts.@"pixelcode-bold.ttf", null);
+    std.log.info("\t- pixelcode-bold-italic.ttf", .{});
+    try dvui.addFont("pixelcode-bold-italic", pixttf.assets.files.fonts.@"pixelcode-bold-italic.ttf", null);
+    std.log.info("\t- pixelcode-extrabold.ttf", .{});
+    try dvui.addFont("pixelcode-extrabold", pixttf.assets.files.fonts.@"pixelcode-extrabold.ttf", null);
+    std.log.info("\t- pixelcode-extrabold-italic.ttf", .{});
+    try dvui.addFont("pixelcode-extrabold-italic", pixttf.assets.files.fonts.@"pixelcode-extrabold-italic.ttf", null);
+    std.log.info("\t- pixelcode-medium.ttf", .{});
+    try dvui.addFont("pixelcode-medium", pixttf.assets.files.fonts.@"pixelcode-medium.ttf", null);
+    std.log.info("\t- pixelcode-medium-italic.ttf", .{});
+    try dvui.addFont("pixelcode-medium-italic", pixttf.assets.files.fonts.@"pixelcode-medium-italic.ttf", null);
+    std.log.info("\t- pixelcode-thin.ttf", .{});
+    try dvui.addFont("pixelcode-thin", pixttf.assets.files.fonts.@"pixelcode-thin.ttf", null);
+    std.log.info("\t- pixelcode-thin-italic.ttf", .{});
+    try dvui.addFont("pixelcode-thin-italic", pixttf.assets.files.fonts.@"pixelcode-thin-italic.ttf", null);
+
+    std.log.info("loading theme classic_dark.json", .{});
     pixttf.theme = try Theme.fromJson(allocator, "assets/themes/classic_dark.json");
 
     // TODO: Theme should probably do this
