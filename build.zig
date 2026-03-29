@@ -23,6 +23,10 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
+    const assetpack = @import("assetpack");
+    const assets_module = assetpack.pack(b, b.path("assets"), .{});
+    exe.root_module.addImport("assets", assets_module);
+
     b.installArtifact(exe);
 
     const run_exe = b.addRunArtifact(exe);

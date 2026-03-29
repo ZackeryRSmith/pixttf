@@ -8,6 +8,10 @@
             .url = "git+https://github.com/david-vanderson/dvui?ref=main#22ed12c556d569db5e999624e76e6405483bd0d1",
             .hash = "dvui-0.4.0-dev-AQFJme2X2gBetdkwE07-OCCDBd2AmdocfhvgLRQQcC20",
         },
+        .assetpack = .{
+            .url = "git+https://github.com/foxnne/assetpack#40314c96819d53ba44c3cab1b2b71219004de829",
+            .hash = "assetpack-0.1.0-5DA2d2VlAACfTN5RE7XvEVSPwr-a8IT2E58MFnONRXnP",
+        },
     },
     // TODO: likely have to add some extra paths here E.g. README.md
     .paths = .{
