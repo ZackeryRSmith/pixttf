@@ -1,5 +1,6 @@
 const std = @import("std");
 const dvui = @import("dvui");
+pub const assets = @import("assets");
 
 // TODO: Should this just take the version from .zig.zon?
 //       iirc theres no way to specify a pre field
@@ -22,6 +23,9 @@ const title = std.fmt.comptimePrint("Pixtf {d}.{d}.{d}{s}", .{
 pub const App = @import("editor/App.zig");
 pub const Theme = @import("editor/Theme.zig");
 pub const Editor = @import("editor/Editor.zig");
+
+// dialogs
+pub const GreeterDialog = @import("editor/dialogs/GreeterDialog.zig");
 
 // TODO: might make more sense for this to be a file under editor/widgets
 // widgets
@@ -56,6 +60,7 @@ pub const dvui_app: dvui.App = .{
             .size = .{ .w = 1200.0, .h = 650.0 },
             .min_size = .{ .w = 640.0, .h = 480.0 },
             .title = title,
+            .icon = assets.files.@"icon.png",
             .window_init_options = .{},
         },
     },
