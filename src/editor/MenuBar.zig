@@ -85,7 +85,9 @@ pub fn tick(menubar: *MenuBar) !dvui.App.Result {
 
             labeledSeparator(@src(), "Misc");
             if (dvui.menuItemLabel(@src(), "Debug Window", .{}, .{ .expand = .horizontal }) != null) {}
-            if (dvui.menuItemLabel(@src(), "Demo Window", .{}, .{ .expand = .horizontal }) != null) {}
+            if (dvui.menuItemLabel(@src(), "Demo Window", .{}, .{ .expand = .horizontal }) != null) {
+                dvui.Examples.show_demo_window = !dvui.Examples.show_demo_window;
+            }
         }
 
         if (dvui.menuItemLabel(@src(), "Help", .{ .submenu = true }, .{})) |r| {
@@ -108,6 +110,7 @@ pub fn tick(menubar: *MenuBar) !dvui.App.Result {
         }
     }
 
+    dvui.Examples.demo(.full);
     return .ok;
 }
 fn labeledSeparator(src: std.builtin.SourceLocation, str: []const u8) void {
