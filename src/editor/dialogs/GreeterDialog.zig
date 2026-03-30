@@ -87,6 +87,7 @@ pub fn show() bool {
         _ = dvui.button(@src(), "Release Notes", .{}, .{ .background = false, .font = button_font });
         if (dvui.button(@src(), "About", .{}, .{ .background = false, .font = button_font })) {
             pixttf.editor.menu_bar.show_about_dialog = true;
+            return false;
         }
     }
 

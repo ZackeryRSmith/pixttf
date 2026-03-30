@@ -74,9 +74,9 @@ pub fn show() bool {
             defer tl.deinit();
 
             tl.addText("An app to create and edit pixel fonts powered by ", .{});
-            tl.addLink(.{ .text = "Zig", .url = "https://github.com/ziglang/zig" }, .{});
+            tl.addLink(.{ .text = "Zig", .url = "https://github.com/ziglang/zig" }, .{ .color_text = pixttf.theme.color.accent });
             tl.addText(" and ", .{});
-            tl.addLink(.{ .text = "DVUI", .url = "https://github.com/david-vanderson/dvui" }, .{});
+            tl.addLink(.{ .text = "DVUI", .url = "https://github.com/david-vanderson/dvui" }, .{ .color_text = pixttf.theme.color.accent });
             tl.addTextDone(.{});
         }
         {
@@ -97,19 +97,19 @@ pub fn show() bool {
         var tl = dvui.textLayout(@src(), .{}, .{ .background = false, .expand = .horizontal });
         defer tl.deinit();
 
-        tl.addLink(.{ .text = "Sergi Lázaro", .url = "https://sergilazaro.com/" }, .{});
+        tl.addLink(.{ .text = "Sergi Lázaro", .url = "https://sergilazaro.com/" }, .{ .color_text = pixttf.theme.color.accent });
         tl.addText(" for creating ", .{});
-        tl.addLink(.{ .text = "PixelForge", .url = "https://pixel-forge.com/" }, .{});
+        tl.addLink(.{ .text = "PixelForge", .url = "https://pixel-forge.com/" }, .{ .color_text = pixttf.theme.color.accent });
         tl.addText(" the inspiration for this project.\n", .{});
 
-        tl.addLink(.{ .text = "David Vanderson", .url = "https://github.com/david-vanderson" }, .{});
+        tl.addLink(.{ .text = "David Vanderson", .url = "https://github.com/david-vanderson" }, .{ .color_text = pixttf.theme.color.accent });
         tl.addText(" for ", .{});
-        tl.addLink(.{ .text = "DVUI", .url = "https://github.com/david-vanderson/dvui" }, .{});
+        tl.addLink(.{ .text = "DVUI", .url = "https://github.com/david-vanderson/dvui" }, .{ .color_text = pixttf.theme.color.accent });
         tl.addText(" and all the help!\n", .{});
 
-        tl.addLink(.{ .text = "Foxnne", .url = "https://github.com/foxnne" }, .{});
+        tl.addLink(.{ .text = "Foxnne", .url = "https://github.com/foxnne" }, .{ .color_text = pixttf.theme.color.accent });
         tl.addText(" for creating ", .{});
-        tl.addLink(.{ .text = "Pixi", .url = "https://github.com/foxnne/pixi" }, .{});
+        tl.addLink(.{ .text = "Pixi", .url = "https://github.com/foxnne/pixi" }, .{ .color_text = pixttf.theme.color.accent });
         tl.addText(" which much of PixTTF is based on.", .{});
         tl.addTextDone(.{});
     }
