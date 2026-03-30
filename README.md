@@ -9,7 +9,20 @@
 > [!CAUTION]  
 > PixTTF is currently under active development. The codebase is in a pre-alpha state and is not yet functional.
 
+
+
+
 # Currently supported features
+
+<table align="right" style="width: auto; border: none; margin: 0; padding: 0;">
+  <tr>
+    <td style="border: none;">
+      <img src="assets/app_preview1.png" width="400px"><br>
+      <img src="assets/app_preview2.png" width="400px">
+    </td>
+  </tr>
+</table>
+
 - [ ] Import TTF
 - [ ] Export TTF
 - [ ] Multiple sizes and weights for a single TTF
@@ -26,6 +39,7 @@
 - [ ] Copying characters to alternative versions
 - [ ] Autosave
 
+<br />
 
 # Compile
 <!-- will likely be needed in the future (stolen line from Pixi)
