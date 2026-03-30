@@ -94,7 +94,7 @@ pub fn show() bool {
         if (!dvui.eventMatchSimple(e, dialog_win.data())) {
             switch (e.evt) {
                 .mouse => |me| {
-                    if (me.action == .press) {
+                    if (me.action == .press and !back.data().rect.contains(dialog_win.screenRectScale(.{}).pointFromPhysical(me.p))) {
                         e.handle(@src(), dialog_win.data());
                         return false;
                     }
