@@ -36,6 +36,7 @@ All contributions are welcome! Anything helps improve this software, create an i
 - [ ] Multiple sizes and weights for a single TTF
 - [X] Unicode support
 - [X] Character/glyph editor
+- [X] Detailed glyph lookup
 - [X] Typical pixel art operations (draw, erase, ~~bucket~~, ~~selection~~, ~~transformation~~)
 - [ ] Text preview
 - [ ] Infinite undo and redo history
