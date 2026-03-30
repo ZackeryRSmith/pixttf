@@ -46,5 +46,35 @@ pub fn tick(glyph_menu: *GlyphMenu) !void {
     });
     defer vbox.deinit();
 
-    dvui.labelNoFmt(@src(), "This is so flippin glyph", .{}, .{ .expand = .both, .gravity_x = 0.5, .gravity_y = 0.5 });
+    var box = dvui.box(@src(), .{}, .{ .margin = .all(5) });
+    defer box.deinit();
+
+    {
+        var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{ .expand = .both });
+        defer hbox.deinit();
+
+        {
+            var container = dvui.box(@src(), .{}, .{
+                .background = true,
+                .color_fill = pixttf.theme.color.bg_panel,
+                .min_size_content = .all(60),
+            });
+            defer container.deinit();
+
+            // encode the codepoint to UTF-8
+            var buf: [5]u8 = .{0} ** 5;
+            const byte_len = std.unicode.utf8Encode(pixttf.editor.active_codepoint, buf[0..4]) catch unreachable;
+            const label: [:0]const u8 = buf[0..byte_len :0];
+            if (dvui.labelClick(@src(), "{s}", .{label}, .{}, .{
+                .font = dvui.Font.find(.{ .family = "fallback" }).larger(12),
+                .gravity_x = 0.5,
+                .gravity_y = 0.5,
+            })) {
+                const url = try std.fmt.allocPrint(pixttf.app.allocator, "https://codepoints.net/U+{X:0>4}", .{pixttf.editor.active_codepoint});
+                defer pixttf.app.allocator.free(url);
+
+                _ = dvui.openURL(.{ .url = url });
+            }
+        }
+    }
 }
