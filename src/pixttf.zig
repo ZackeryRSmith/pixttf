@@ -26,6 +26,10 @@ pub const Editor = @import("editor/Editor.zig");
 
 pub const charsets: []const @import("charsets/CharacterSet.zig") = &.{
     @import("charsets/ascii.zig").ascii,
+    @import("charsets/adobe_latin.zig").adobe_latin_1,
+    @import("charsets/adobe_latin.zig").adobe_latin_2,
+    @import("charsets/adobe_latin.zig").adobe_latin_3,
+    @import("charsets/adobe_latin.zig").adobe_latin_4,
 };
 
 // dialogs
