@@ -6,6 +6,8 @@ const dvui = @import("dvui");
 const App = pixttf.App;
 const MenuBar = @This();
 
+show_about_dialog: bool = false,
+
 pub fn init() !MenuBar {
     return .{};
 }
@@ -14,9 +16,7 @@ pub fn deinit(menubar: *MenuBar) void {
     _ = menubar;
 }
 
-pub fn tick(menubar: *MenuBar) !dvui.App.Result {
-    _ = menubar;
-
+pub fn tick(self: *MenuBar) !dvui.App.Result {
     {
         var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{ .style = .window, .color_fill = pixttf.theme.color.bg_panel_alt, .background = true, .expand = .horizontal });
         defer hbox.deinit();
@@ -106,9 +106,14 @@ pub fn tick(menubar: *MenuBar) !dvui.App.Result {
             if (dvui.menuItemLabel(@src(), "Release Notes", .{}, .{ .expand = .horizontal }) != null) {}
             labeledSeparator(@src(), "Misc");
             if (dvui.menuItemLabel(@src(), "Tutorial", .{}, .{ .expand = .horizontal }) != null) {}
-            if (dvui.menuItemLabel(@src(), "About", .{}, .{ .expand = .horizontal }) != null) {}
+            if (dvui.menuItemLabel(@src(), "About", .{}, .{ .expand = .horizontal }) != null) {
+                self.show_about_dialog = true;
+            }
         }
     }
+
+    if (self.show_about_dialog)
+        self.show_about_dialog = pixttf.AboutDialog.show();
 
     dvui.Examples.demo(.full);
     return .ok;

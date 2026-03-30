@@ -85,7 +85,9 @@ pub fn show() bool {
         dvui.label(@src(), "Read", .{}, .{ .font = title_font, .color_text = pixttf.theme.color.accent });
         _ = dvui.button(@src(), "Manual", .{}, .{ .background = false, .font = button_font });
         _ = dvui.button(@src(), "Release Notes", .{}, .{ .background = false, .font = button_font });
-        _ = dvui.button(@src(), "About", .{}, .{ .background = false, .font = button_font });
+        if (dvui.button(@src(), "About", .{}, .{ .background = false, .font = button_font })) {
+            pixttf.editor.menu_bar.show_about_dialog = true;
+        }
     }
 
     for (dvui.events()) |*e| {
