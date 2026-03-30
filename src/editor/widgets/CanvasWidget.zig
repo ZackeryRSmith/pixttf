@@ -1,7 +1,6 @@
 // TODO: Fix trackpad issues. MacOS is *okay* but no detection for trackpad
 //       input is done. Meaning a laptop with Windows will have issues. Pixi
 //       does this naive trackpad check too
-// TODO: Really gotta break this file down a bit more.
 
 const std = @import("std");
 const builtin = @import("builtin");
@@ -78,37 +77,34 @@ pub fn processEvents(self: *CanvasWidget) void {
     var zoom: f32 = 1.0;
     var zoom_point: dvui.Point.Physical = .{};
 
-    const events = dvui.events();
-    for (events) |*e| {
+    for (dvui.events()) |*e| {
         if (!self.scroll_container.matchEvent(e)) continue;
 
         switch (e.evt) {
-            .mouse => |mouse| {
-                switch (mouse.action) {
-                    .press => switch (mouse.button) {
-                        .left, .right => self.handleDrawInput(e, mouse),
-                        // .right => e.handle(@src(), self.scroll_container.data()), // TODO: radial toolbox
-                        .middle => self.handlePanStart(e, mouse),
-                        else => {},
-                    },
-                    .release => switch (mouse.button) {
-                        .left, .right => if (dvui.captured(self.scroll_container.data().id)) {
-                            e.handle(@src(), self.scroll_container.data());
-                            dvui.captureMouse(null, e.num);
-                            dvui.dragEnd();
-                            self.active_draw_button.* = .none;
-                        },
-                        .middle => self.handlePanEnd(e),
-                        else => {},
-                    },
-                    .motion => {
-                        self.handlePanMotion(e, mouse);
-                        self.handleDrawMotion(e, mouse);
-                    },
-                    .wheel_x => self.handleWheelX(e, mouse),
-                    .wheel_y => self.handleWheelY(e, mouse, &zoom, &zoom_point),
+            .mouse => |mouse| switch (mouse.action) {
+                .press => switch (mouse.button) {
+                    .left, .right => self.handleDrawInput(e, mouse),
+                    .middle => self.handlePanStart(e, mouse),
                     else => {},
-                }
+                },
+                .release => switch (mouse.button) {
+                    .left, .right => if (dvui.captured(self.scroll_container.data().id)) {
+                        e.handle(@src(), self.scroll_container.data());
+                        dvui.captureMouse(null, e.num);
+                        dvui.dragEnd();
+                        self.active_draw_button.* = .none;
+                    },
+                    .middle => self.handlePanEnd(e),
+                    else => {},
+                },
+                .motion => {
+                    self.handleMotion(mouse);
+                    self.handlePanMotion(e, mouse);
+                    self.handleDrawMotion(e, mouse);
+                },
+                .wheel_x => self.handleWheelX(e, mouse),
+                .wheel_y => self.handleWheelY(e, mouse, &zoom, &zoom_point),
+                else => {},
             },
             else => {},
         }
@@ -124,8 +120,19 @@ pub fn processEvents(self: *CanvasWidget) void {
 pub fn draw(self: *CanvasWidget) void {
     if (self.scale.* * CELL_SIZE < 2.0) return;
     self.drawGrid();
-    self.drawStrokes();
+    self.blitStrokes(.{ .x = 0, .y = 0 }, self.init_opts.strokes.items, .white);
+
+    var max: i16 = 0;
+    for (self.init_opts.strokes.items) |stroke| {
+        max = @max(max, stroke.x);
+    }
+
+    self.blitStrokes(.{ .x = max + 3, .y = 0 }, self.init_opts.strokes.items, .gray);
 }
+
+// ----------------------------------------------------------------------------
+// Event Handling
+// ----------------------------------------------------------------------------
 
 fn handleDrawInput(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse) void {
     e.handle(@src(), self.scroll_container.data());
@@ -138,6 +145,26 @@ fn handleDrawInput(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse)
         .right => self.erasePixel(mouse.p),
         else => {},
     }
+}
+
+fn handleMotion(self: *CanvasWidget, mouse: dvui.Event.Mouse) void {
+    const scaled_cell = self.scale.* * CELL_SIZE;
+    const canvas_point = self.screen_rect_scale.pointFromPhysical(mouse.p);
+    const pixel_x: i16 = @intFromFloat(@floor(canvas_point.x / CELL_SIZE));
+    const pixel_y: i16 = @intFromFloat(@floor(-canvas_point.y / CELL_SIZE));
+
+    const fx: f32 = @floatFromInt(pixel_x);
+    const fy: f32 = @floatFromInt(pixel_y);
+
+    const screen_x = fx * scaled_cell - self.origin.x;
+    const screen_y = -(fy + 1.0) * scaled_cell - self.origin.y;
+
+    const tl = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x, .y = screen_y });
+    const tr = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x + scaled_cell, .y = screen_y });
+    const br = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x + scaled_cell, .y = screen_y + scaled_cell });
+    const bl = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x, .y = screen_y + scaled_cell });
+
+    dvui.Path.fillConvex(.{ .points = &.{ tl, tr, br, bl } }, .{ .color = .gray });
 }
 
 fn handlePanStart(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse) void {
@@ -154,6 +181,7 @@ fn handlePanEnd(self: *CanvasWidget, e: *dvui.Event) void {
     dvui.dragEnd();
     self.panning.* = false;
 }
+
 fn handlePanMotion(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse) void {
     if (!self.panning.*) return;
     if (!dvui.captured(self.scroll_container.data().id)) return;
@@ -165,7 +193,7 @@ fn handlePanMotion(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse)
     }
 }
 
-fn handleDrawMotion(self: *CanvasWidget, e: *dvui.Event, mouse: anytype) void {
+fn handleDrawMotion(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse) void {
     if (!dvui.captured(self.scroll_container.data().id)) return;
     if (dvui.dragging(mouse.p, null) == null) return;
     e.handle(@src(), self.scroll_container.data());
@@ -177,33 +205,26 @@ fn handleDrawMotion(self: *CanvasWidget, e: *dvui.Event, mouse: anytype) void {
     }
 }
 
-fn handleWheelX(self: *CanvasWidget, e: *dvui.Event, mouse: anytype) void {
-    // capture and ignore horizontal scroll on macOS when cmd is held,
-    // to prevent simultaneous scroll + zoom.
+fn handleWheelX(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse) void {
+    // On macOS, consume horizontal scroll when cmd is held to prevent
+    // simultaneous scroll + zoom (cmd+scroll_y drives zoom).
     if (builtin.os.tag == .macos and mouse.mod.matchKeyBind(.{ .command = true }))
         e.handle(@src(), self.scroll_container.data());
 }
 
-fn handleWheelY(self: *CanvasWidget, e: *dvui.Event, mouse: anytype, zoom: *f32, zoom_point: *dvui.Point.Physical) void {
+fn handleWheelY(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse, zoom: *f32, zoom_point: *dvui.Point.Physical) void {
     const base: f32 = 1.01;
 
-    // TODO: MacOS != Touchpad 100% of the time — would like gesture support
-    //       but this seems to be a dvui limitation as of now.
     if (builtin.os.tag == .macos) {
+        // cmd+scroll zooms; plain scroll is handled elsewhere.
         if (mouse.mod.matchKeyBind(.{ .command = true })) {
-            const zoom_scale = @exp(@log(base) * -mouse.action.wheel_y);
-            if (zoom_scale != 1.0) {
-                zoom.* *= zoom_scale;
-                zoom_point.* = mouse.p;
-            }
+            zoom.* *= @exp(@log(base) * -mouse.action.wheel_y);
+            zoom_point.* = mouse.p;
         }
     } else {
         e.handle(@src(), self.scroll_container.data());
-        const zoom_scale = @exp(@log(base) * mouse.action.wheel_y);
-        if (zoom_scale != 1.0) {
-            zoom.* *= zoom_scale;
-            zoom_point.* = mouse.p;
-        }
+        zoom.* *= @exp(@log(base) * mouse.action.wheel_y);
+        zoom_point.* = mouse.p;
     }
 }
 
@@ -256,6 +277,57 @@ fn adjustViewport(self: *CanvasWidget) void {
     }
 }
 
+// ----------------------------------------------------------------------------
+// Drawing
+// ----------------------------------------------------------------------------
+
+fn drawPixel(self: *CanvasWidget, p: dvui.Point.Physical) void {
+    const canvas_point = self.screen_rect_scale.pointFromPhysical(p);
+    const pixel_x: i16 = @intFromFloat(@floor(canvas_point.x / CELL_SIZE));
+    const pixel_y: i16 = @intFromFloat(@floor(-canvas_point.y / CELL_SIZE));
+
+    for (self.init_opts.strokes.items) |stroke| {
+        if (stroke.x == pixel_x and stroke.y == pixel_y) return;
+    }
+    self.init_opts.strokes.append(self.init_opts.allocator, .{
+        .x = pixel_x,
+        .y = pixel_y,
+    }) catch unreachable;
+}
+
+fn erasePixel(self: *CanvasWidget, p: dvui.Point.Physical) void {
+    const canvas_point = self.screen_rect_scale.pointFromPhysical(p);
+    const pixel_x: i16 = @intFromFloat(@floor(canvas_point.x / CELL_SIZE));
+    const pixel_y: i16 = @intFromFloat(@floor(-canvas_point.y / CELL_SIZE));
+
+    const existing = for (self.init_opts.strokes.items, 0..) |stroke, i| {
+        if (stroke.x == pixel_x and stroke.y == pixel_y) break i;
+    } else null;
+
+    if (existing) |i| {
+        _ = self.init_opts.strokes.orderedRemove(i);
+    }
+}
+
+pub fn blitStrokes(self: *CanvasWidget, origin: pixttf.Editor.PixelPosition, strokes: []const pixttf.Editor.PixelPosition, color: dvui.Color) void {
+    const scaled_cell = self.scale.* * CELL_SIZE;
+
+    for (strokes) |stroke| {
+        const fx: f32 = @floatFromInt(stroke.x + origin.x);
+        const fy: f32 = @floatFromInt(stroke.y + origin.y);
+
+        const screen_x = fx * scaled_cell - self.origin.x;
+        const screen_y = -(fy + 1.0) * scaled_cell - self.origin.y;
+
+        const tl = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x, .y = screen_y });
+        const tr = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x + scaled_cell, .y = screen_y });
+        const br = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x + scaled_cell, .y = screen_y + scaled_cell });
+        const bl = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x, .y = screen_y + scaled_cell });
+
+        dvui.Path.fillConvex(.{ .points = &.{ tl, tr, br, bl } }, .{ .color = color });
+    }
+}
+
 fn drawGrid(self: *CanvasWidget) void {
     const scaled_cell = self.scale.* * CELL_SIZE;
     const view_w = self.scroll_info.virtual_size.w;
@@ -274,7 +346,6 @@ fn drawGrid(self: *CanvasWidget) void {
         const is_negative = (ix < 0);
         self.drawLine(screen_x, 0, screen_x, view_h, 1, if (is_negative) .gray else grid_color);
 
-        // TODO: improve visually, consider PixelForge style rendering
         if (is_negative and scaled_cell > 6.0) {
             var iy = start_y;
             while (iy <= end_y) : (iy += 1) {
@@ -298,54 +369,6 @@ fn drawGrid(self: *CanvasWidget) void {
     self.drawLine(origin_screen_x, 0, origin_screen_x, view_h, 3, .white);
     self.drawLine(0, origin_screen_y, origin_screen_x - 3, origin_screen_y, 3, .gray);
     self.drawLine(origin_screen_x, origin_screen_y, view_w, origin_screen_y, 3, .white);
-}
-
-fn drawStrokes(self: *CanvasWidget) void {
-    const scaled_cell = self.scale.* * CELL_SIZE;
-
-    for (self.init_opts.strokes.items) |stroke| {
-        const fx: f32 = @floatFromInt(stroke.x);
-        const fy: f32 = @floatFromInt(stroke.y);
-
-        const screen_x = fx * scaled_cell - self.origin.x;
-        const screen_y = -(fy + 1.0) * scaled_cell - self.origin.y;
-
-        const tl = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x, .y = screen_y });
-        const tr = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x + scaled_cell, .y = screen_y });
-        const br = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x + scaled_cell, .y = screen_y + scaled_cell });
-        const bl = self.scroll_rect_scale.pointToPhysical(.{ .x = screen_x, .y = screen_y + scaled_cell });
-
-        dvui.Path.fillConvex(.{ .points = &.{ tl, tr, br, bl } }, .{ .color = .white });
-    }
-}
-
-fn drawPixel(self: *CanvasWidget, p: dvui.Point.Physical) void {
-    const canvas_point = self.screen_rect_scale.pointFromPhysical(p);
-    const pixel_x: i16 = @intFromFloat(@floor(canvas_point.x / CELL_SIZE));
-    const pixel_y: i16 = @intFromFloat(@floor(-canvas_point.y / CELL_SIZE));
-
-    // don't append duplicates
-    for (self.init_opts.strokes.items) |stroke| {
-        if (stroke.x == pixel_x and stroke.y == pixel_y) return;
-    }
-    self.init_opts.strokes.append(self.init_opts.allocator, .{
-        .x = pixel_x,
-        .y = pixel_y,
-    }) catch unreachable;
-}
-
-fn erasePixel(self: *CanvasWidget, p: dvui.Point.Physical) void {
-    const canvas_point = self.screen_rect_scale.pointFromPhysical(p);
-    const pixel_x: i16 = @intFromFloat(@floor(canvas_point.x / CELL_SIZE));
-    const pixel_y: i16 = @intFromFloat(@floor(-canvas_point.y / CELL_SIZE));
-
-    const existing = for (self.init_opts.strokes.items, 0..) |stroke, i| {
-        if (stroke.x == pixel_x and stroke.y == pixel_y) break i;
-    } else null;
-
-    if (existing) |i| {
-        _ = self.init_opts.strokes.orderedRemove(i);
-    }
 }
 
 fn drawLine(self: *CanvasWidget, x1: f32, y1: f32, x2: f32, y2: f32, thickness: f32, color: dvui.Color) void {
