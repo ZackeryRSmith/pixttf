@@ -72,6 +72,9 @@ pub fn tick(self: *CharacterSetMenu) !void {
     var scroll_area = dvui.scrollArea(@src(), .{}, .{ .expand = .horizontal });
     defer scroll_area.deinit();
 
+    var flexbox = dvui.flexbox(@src(), .{}, .{});
+    defer flexbox.deinit();
+
     const active = pixttf.charsets[self.selected_idx];
 
     for (active.codepoints, 0..) |cp, i| {
