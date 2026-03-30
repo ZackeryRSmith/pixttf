@@ -94,6 +94,8 @@ pub fn processEvents(self: *CanvasWidget) void {
                     .release => switch (mouse.button) {
                         .left, .right => if (dvui.captured(self.scroll_container.data().id)) {
                             e.handle(@src(), self.scroll_container.data());
+                            dvui.captureMouse(null, e.num);
+                            dvui.dragEnd();
                             self.active_draw_button.* = .none;
                         },
                         .middle => self.handlePanEnd(e),
@@ -153,7 +155,6 @@ fn handlePanEnd(self: *CanvasWidget, e: *dvui.Event) void {
     self.panning.* = false;
 }
 fn handlePanMotion(self: *CanvasWidget, e: *dvui.Event, mouse: dvui.Event.Mouse) void {
-    std.debug.print("is? {}\n", .{self.panning.*});
     if (!self.panning.*) return;
     if (!dvui.captured(self.scroll_container.data().id)) return;
     if (dvui.dragging(mouse.p, null)) |dps| {
