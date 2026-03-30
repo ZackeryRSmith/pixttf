@@ -55,7 +55,7 @@ pub fn init(window: *dvui.Window) !void {
 
     // TODO: Theme should probably do this
     var default_font = dvui.Font.find(.{ .family = "pixelcode" });
-    default_font.size = 17;
+    default_font.size = 8;
     var bold_font = dvui.Font.find(.{ .family = "pixelcode-bold" });
     bold_font.size = 28;
 
