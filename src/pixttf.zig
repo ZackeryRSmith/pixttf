@@ -31,6 +31,7 @@ pub const charsets: []const @import("charsets/CharacterSet.zig") = &.{
 // dialogs
 pub const GreeterDialog = @import("editor/dialogs/GreeterDialog.zig");
 pub const AboutDialog = @import("editor/dialogs/AboutDialog.zig");
+pub const EditWarningDialog = @import("editor/dialogs/ExitWarningDialog.zig");
 
 // TODO: might make more sense for this to be a file under editor/widgets
 // widgets
