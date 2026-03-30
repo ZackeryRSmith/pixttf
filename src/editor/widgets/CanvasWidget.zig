@@ -16,7 +16,6 @@ const SCALE_MAX = 15;
 /// cell size in pixels
 const CELL_SIZE = 50;
 
-// wd: dvui.WidgetData,
 init_opts: InitOpts,
 origin: *dvui.Point = undefined,
 scale: *f32 = undefined,
@@ -36,7 +35,6 @@ pub var defaults: dvui.Options = .{
 pub const InitOpts = struct {
     allocator: std.mem.Allocator,
     strokes: *std.ArrayList(pixttf.Editor.PixelPosition),
-    was_allocated_on_widget_stack: bool = false,
 };
 
 pub fn init(self: *CanvasWidget, src: std.builtin.SourceLocation, init_opts: InitOpts, opts: dvui.Options) void {
@@ -60,8 +58,7 @@ pub fn init(self: *CanvasWidget, src: std.builtin.SourceLocation, init_opts: Ini
 }
 
 pub fn deinit(self: *CanvasWidget) void {
-    const should_free = self.data().was_allocated_on_widget_stack;
-    defer if (should_free) dvui.widgetFree(self);
+    defer if (dvui.widgetIsAllocated(self)) dvui.widgetFree(self);
     defer self.* = undefined;
 
     self.scaler.deinit();

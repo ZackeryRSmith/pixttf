@@ -14,9 +14,7 @@ const RadialMenuWidget = @This();
 fw: dvui.FloatingWidget = undefined,
 init_opts: InitOpts,
 
-pub const InitOpts = struct {
-    was_allocated_on_widget_stack: bool = false,
-};
+pub const InitOpts = struct {};
 
 pub fn init(self: *RadialMenuWidget, src: std.builtin.SourceLocation, init_opts: InitOpts, opts: dvui.Options) void {
     self.* = .{
@@ -27,6 +25,8 @@ pub fn init(self: *RadialMenuWidget, src: std.builtin.SourceLocation, init_opts:
 }
 
 pub fn deinit(self: *RadialMenuWidget) void {
+    defer if (dvui.widgetIsAllocated(self)) dvui.widgetFree(self);
+    defer self.* = undefined;
     self.fw.deinit();
 }
 

@@ -33,7 +33,6 @@ pub const CanvasWidget = @import("editor/widgets/CanvasWidget.zig");
 pub fn canvas(src: std.builtin.SourceLocation, init_opts: CanvasWidget.InitOpts, opts: dvui.Options) *CanvasWidget {
     var ret = dvui.widgetAlloc(CanvasWidget);
     ret.init(src, init_opts, opts);
-    ret.data().was_allocated_on_widget_stack = true;
     ret.processEvents();
     ret.draw();
     return ret;
@@ -43,7 +42,6 @@ pub const RadialMenuWidget = @import("editor/widgets/RadialMenuWidget.zig");
 pub fn radialMenu(src: std.builtin.SourceLocation, init_opts: RadialMenuWidget.InitOpts, opts: dvui.Options) *RadialMenuWidget {
     var ret = dvui.widgetAlloc(RadialMenuWidget);
     ret.init(src, init_opts, opts);
-    ret.data().was_allocated_on_widget_stack = true;
     // ret.processEvents();
     ret.draw();
     return ret;
