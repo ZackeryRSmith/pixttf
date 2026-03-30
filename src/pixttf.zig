@@ -36,6 +36,7 @@ pub const charsets: []const @import("charsets/CharacterSet.zig") = &.{
 pub const GreeterDialog = @import("editor/dialogs/GreeterDialog.zig");
 pub const AboutDialog = @import("editor/dialogs/AboutDialog.zig");
 pub const EditWarningDialog = @import("editor/dialogs/ExitWarningDialog.zig");
+pub const SettingsDialog = @import("editor/dialogs/SettingsDialog.zig");
 
 // TODO: might make more sense for this to be a file under editor/widgets
 // widgets
@@ -59,8 +60,8 @@ pub fn radialMenu(src: std.builtin.SourceLocation, init_opts: RadialMenuWidget.I
 
 // global pointers
 pub var app: *App = undefined;
-pub var theme: Theme = undefined;
 pub var editor: *Editor = undefined;
+pub var theme: Theme = undefined;
 
 pub const dvui_app: dvui.App = .{
     .config = .{

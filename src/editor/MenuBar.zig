@@ -6,8 +6,6 @@ const dvui = @import("dvui");
 const App = pixttf.App;
 const MenuBar = @This();
 
-show_about_dialog: bool = false,
-
 pub fn init() !MenuBar {
     return .{};
 }
@@ -17,6 +15,8 @@ pub fn deinit(menubar: *MenuBar) void {
 }
 
 pub fn tick(self: *MenuBar) !dvui.App.Result {
+    _ = self;
+
     {
         var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{ .style = .window, .color_fill = pixttf.theme.color.bg_panel_alt, .background = true, .expand = .horizontal });
         defer hbox.deinit();
@@ -63,7 +63,9 @@ pub fn tick(self: *MenuBar) !dvui.App.Result {
             if (dvui.menuItemLabel(@src(), "Redo", .{}, .{ .expand = .horizontal }) != null) {}
             labeledSeparator(@src(), "Meta");
             if (dvui.menuItemLabel(@src(), "Font Properties", .{}, .{ .expand = .horizontal }) != null) {}
-            if (dvui.menuItemLabel(@src(), "Settings", .{}, .{ .expand = .horizontal }) != null) {}
+            if (dvui.menuItemLabel(@src(), "Settings", .{}, .{ .expand = .horizontal }) != null) {
+                pixttf.SettingsDialog.show();
+            }
         }
 
         if (dvui.menuItemLabel(@src(), "View", .{ .submenu = true }, .{})) |r| {
@@ -107,13 +109,10 @@ pub fn tick(self: *MenuBar) !dvui.App.Result {
             labeledSeparator(@src(), "Misc");
             if (dvui.menuItemLabel(@src(), "Tutorial", .{}, .{ .expand = .horizontal }) != null) {}
             if (dvui.menuItemLabel(@src(), "About", .{}, .{ .expand = .horizontal }) != null) {
-                self.show_about_dialog = true;
+                pixttf.AboutDialog.show();
             }
         }
     }
-
-    if (self.show_about_dialog)
-        self.show_about_dialog = pixttf.AboutDialog.show();
 
     dvui.Examples.demo(.full);
     return .ok;

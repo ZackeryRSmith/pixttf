@@ -4,7 +4,14 @@ const dvui = @import("dvui");
 
 const AboutDialog = @This();
 
-pub fn show() bool {
+pub fn show() void {
+    var id_mutex = dvui.dialogAdd(null, @src(), 0, render);
+    defer id_mutex.mutex.unlock();
+}
+
+pub fn render(id: dvui.Id) !void {
+    const showing = dvui.dataGetPtrDefault(null, id, "showing", bool, true);
+
     var dialog_win = dvui.floatingWindow(@src(), .{
         .modal = true,
         .stay_above_parent_window = true,
@@ -54,8 +61,8 @@ pub fn show() bool {
         _ = banner;
     }
 
-    var heading_font: dvui.Font = .theme(.heading);
-    heading_font.size = 24;
+    var title_font: dvui.Font = .theme(.title);
+    title_font.size = 24;
 
     var content = dvui.box(@src(), .{}, .{ .margin = .all(20) });
     defer content.deinit();
@@ -68,7 +75,7 @@ pub fn show() bool {
             var vbox = dvui.box(@src(), .{}, .{ .expand = .both });
             defer vbox.deinit();
 
-            dvui.label(@src(), "About", .{}, .{ .font = heading_font, .color_text = pixttf.theme.color.accent });
+            dvui.label(@src(), "About", .{}, .{ .font = title_font, .color_text = pixttf.theme.color.accent });
 
             var tl = dvui.textLayout(@src(), .{}, .{ .background = false, .expand = .horizontal });
             defer tl.deinit();
@@ -83,7 +90,7 @@ pub fn show() bool {
             var vbox = dvui.box(@src(), .{}, .{});
             defer vbox.deinit();
 
-            dvui.label(@src(), "Resources", .{}, .{ .font = heading_font, .color_text = pixttf.theme.color.accent });
+            dvui.label(@src(), "Resources", .{}, .{ .font = title_font, .color_text = pixttf.theme.color.accent });
             dvui.label(@src(), "Github", .{}, .{});
         }
     }
@@ -92,7 +99,7 @@ pub fn show() bool {
         var vbox = dvui.box(@src(), .{}, .{});
         defer vbox.deinit();
 
-        dvui.label(@src(), "With Huge Thanks To", .{}, .{ .font = heading_font, .color_text = pixttf.theme.color.accent });
+        dvui.label(@src(), "With Huge Thanks To", .{}, .{ .font = title_font, .color_text = pixttf.theme.color.accent });
 
         var tl = dvui.textLayout(@src(), .{}, .{ .background = false, .expand = .horizontal });
         defer tl.deinit();
@@ -114,18 +121,32 @@ pub fn show() bool {
         tl.addTextDone(.{});
     }
 
+    {
+        _ = dvui.spacer(@src(), .{ .min_size_content = .height(20) });
+        var tl = dvui.textLayout(@src(), .{}, .{ .background = false, .gravity_x = 1 });
+        defer tl.deinit();
+
+        tl.addText("Made with ", .{});
+        tl.addTextTooltip(@src(), "love", "and many tears", .{ .color_text = .red });
+        tl.addText(" by ", .{});
+        tl.addLink(.{ .text = "ZackeryRSmith", .url = "https://github.com/ZackeryRSmith" }, .{ .color_text = pixttf.theme.color.accent });
+    }
+
     for (dvui.events()) |*e| {
         if (!dvui.eventMatchSimple(e, dialog_win.data())) {
             switch (e.evt) {
                 .mouse => |me| {
                     if (me.action == .press and !back.data().rect.contains(dialog_win.screenRectScale(.{}).pointFromPhysical(me.p))) {
                         e.handle(@src(), dialog_win.data());
-                        return false;
+                        showing.* = false;
                     }
                 },
                 else => continue,
             }
         }
     }
-    return true;
+
+    if (!showing.*) {
+        dvui.dialogRemove(id);
+    }
 }

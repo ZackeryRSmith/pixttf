@@ -4,7 +4,14 @@ const dvui = @import("dvui");
 
 const GreeterDialog = @This();
 
-pub fn show() bool {
+pub fn show() void {
+    var id_mutex = dvui.dialogAdd(null, @src(), 0, render);
+    defer id_mutex.mutex.unlock();
+}
+
+pub fn render(id: dvui.Id) !void {
+    const showing = dvui.dataGetPtrDefault(null, id, "showing", bool, true);
+
     var dialog_win = dvui.floatingWindow(@src(), .{
         .modal = true,
         .stay_above_parent_window = true,
@@ -18,10 +25,6 @@ pub fn show() bool {
     });
     defer dialog_win.deinit();
     dialog_win.drag_area = .{};
-
-    // const extra_stuff: *bool = dvui.dataGetPtrDefault(null, dialog_win.data().id, "extra_stuff", bool, false);
-    // const render_offscreen: *bool = dvui.dataGetPtrDefault(null, dialog_win.data().id, "render_offscreen", bool, true);
-    // const alpha: *f32 = dvui.dataGetPtrDefault(null, dialog_win.data().id, "alpha", f32, 1.0);
 
     // background for dialog_win (since it has background false)
     var back = dvui.box(@src(), .{}, .{
@@ -86,8 +89,8 @@ pub fn show() bool {
         _ = dvui.button(@src(), "Manual", .{}, .{ .background = false, .font = button_font });
         _ = dvui.button(@src(), "Release Notes", .{}, .{ .background = false, .font = button_font });
         if (dvui.button(@src(), "About", .{}, .{ .background = false, .font = button_font })) {
-            pixttf.editor.menu_bar.show_about_dialog = true;
-            return false;
+            pixttf.AboutDialog.show();
+            showing.* = false;
         }
     }
 
@@ -97,12 +100,15 @@ pub fn show() bool {
                 .mouse => |me| {
                     if (me.action == .press and !back.data().rect.contains(dialog_win.screenRectScale(.{}).pointFromPhysical(me.p))) {
                         e.handle(@src(), dialog_win.data());
-                        return false;
+                        showing.* = false;
                     }
                 },
                 else => continue,
             }
         }
     }
-    return true;
+
+    if (!showing.*) {
+        dvui.dialogRemove(id);
+    }
 }

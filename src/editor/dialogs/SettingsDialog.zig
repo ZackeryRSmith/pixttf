@@ -2,7 +2,7 @@ const std = @import("std");
 const pixttf = @import("root");
 const dvui = @import("dvui");
 
-const ExitWarningDialog = @This();
+const SettingsDialog = @This();
 
 pub fn show() void {
     var id_mutex = dvui.dialogAdd(null, @src(), 0, render);
@@ -15,7 +15,8 @@ pub fn render(id: dvui.Id) !void {
     var dialog_win = dvui.floatingWindow(@src(), .{
         .modal = false,
         .stay_above_parent_window = true,
-        .resize = .none,
+        .resize = .all,
+        .open_flag = showing,
     }, .{
         .max_size_content = .width(600),
         .background = false,
@@ -24,6 +25,19 @@ pub fn render(id: dvui.Id) !void {
         .gravity_y = 0.5,
     });
     defer dialog_win.deinit();
+
+    var titlebar = dvui.box(@src(), .{}, .{
+        .expand = .both,
+        .style = .window,
+        .background = true,
+        .border = .all(2),
+        .min_size_content = .width(600),
+        .color_fill = pixttf.theme.color.bg_panel_alt,
+        .color_border = pixttf.theme.color.border_focus,
+    });
+    defer titlebar.deinit();
+
+    dialog_win.dragAreaSet(dvui.windowHeader("Settings", "", showing));
 
     // background for dialog_win (since it has background false)
     var back = dvui.box(@src(), .{}, .{
@@ -36,8 +50,6 @@ pub fn render(id: dvui.Id) !void {
         .color_border = pixttf.theme.color.border_focus,
     });
     defer back.deinit();
-
-    dialog_win.dragAreaSet(dvui.windowHeader("Exit", "", null));
 
     dvui.label(@src(), "There's an unsaved document. Are you sure you want to exit?", .{}, .{});
     dvui.label(@src(), "Unsaved changes will be lost!", .{}, .{});
