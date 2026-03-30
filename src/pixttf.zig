@@ -24,6 +24,10 @@ pub const App = @import("editor/App.zig");
 pub const Theme = @import("editor/Theme.zig");
 pub const Editor = @import("editor/Editor.zig");
 
+pub const charsets: []const @import("charsets/CharacterSet.zig") = &.{
+    @import("charsets/ascii.zig").ascii,
+};
+
 // dialogs
 pub const GreeterDialog = @import("editor/dialogs/GreeterDialog.zig");
 

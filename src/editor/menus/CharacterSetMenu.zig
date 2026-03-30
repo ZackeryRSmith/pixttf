@@ -7,6 +7,15 @@ const dvui = @import("dvui");
 
 const CharacterSetMenu = @This();
 
+// State now holds an index rather than an enum
+selected_idx: usize = 0,
+
+const names: [pixttf.charsets.len][:0]const u8 = blk: {
+    var arr: [pixttf.charsets.len][:0]const u8 = undefined;
+    for (pixttf.charsets, 0..) |cs, i| arr[i] = cs.name;
+    break :blk arr;
+};
+
 pub fn init() !CharacterSetMenu {
     return .{};
 }
@@ -15,8 +24,12 @@ pub fn deinit(character_set_menu: *CharacterSetMenu) void {
     _ = character_set_menu;
 }
 
-pub fn tick(character_set_menu: *CharacterSetMenu) !void {
-    _ = character_set_menu;
+pub fn tick(self: *CharacterSetMenu) !void {
+    var box = dvui.box(@src(), .{}, .{
+        .expand = .both,
+        .max_size_content = .{ .h = 100, .w = 100 },
+    });
+    defer box.deinit();
 
     {
         var tabs = dvui.tabs(@src(), .{ .draw_focus = false }, .{
@@ -48,5 +61,31 @@ pub fn tick(character_set_menu: *CharacterSetMenu) !void {
     });
     defer vbox.deinit();
 
-    dvui.labelNoFmt(@src(), "Well we set our characters... no?", .{}, .{ .expand = .both, .gravity_x = 0.5, .gravity_y = 0.5 });
+    _ = dvui.dropdown(
+        @src(),
+        &names,
+        .{ .choice = &self.selected_idx },
+        .{},
+        .{ .expand = .horizontal },
+    );
+
+    var scroll_area = dvui.scrollArea(@src(), .{}, .{ .expand = .horizontal });
+    defer scroll_area.deinit();
+
+    const active = pixttf.charsets[self.selected_idx];
+
+    for (active.codepoints, 0..) |cp, i| {
+        // encode the codepoint to UTF-8
+        var buf: [5]u8 = .{0} ** 5;
+        const byte_len = std.unicode.utf8Encode(cp, buf[0..4]) catch continue;
+        const label: [:0]const u8 = buf[0..byte_len :0];
+
+        if (dvui.button(@src(), label, .{}, .{
+            .id_extra = i,
+            .min_size_content = .{ .w = 28, .h = 28 },
+        })) {
+            // TODO: handle selected codepoint
+            std.log.debug("selected codepoint U+{X:0>4}", .{cp});
+        }
+    }
 }
