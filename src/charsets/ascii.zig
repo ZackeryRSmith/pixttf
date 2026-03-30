@@ -1,5 +1,5 @@
 pub const ascii = @import("CharacterSet.zig").fromRanges("ASCII", &.{
-    .{ 0x0020, 0x0020 }, // Space
+    // .{ 0x0020, 0x0020 }, // Space
     .{ 0x0021, 0x002F }, // ! " # $ % & ' ( ) * + , - . /
     .{ 0x0030, 0x0039 }, // 0–9
     .{ 0x003A, 0x0040 }, // : ; < = > ? @
