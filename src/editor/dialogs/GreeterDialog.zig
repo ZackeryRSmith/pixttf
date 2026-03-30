@@ -17,7 +17,7 @@ pub fn render(id: dvui.Id) !void {
         .stay_above_parent_window = true,
         .resize = .none,
     }, .{
-        .max_size_content = .width(600),
+        .max_size_content = .width(800),
         .background = false,
         .border = .all(0),
         .gravity_x = 0.5,
@@ -32,7 +32,6 @@ pub fn render(id: dvui.Id) !void {
         .style = .window,
         .background = true,
         .border = .all(2),
-        .min_size_content = .width(600),
         .color_fill = pixttf.theme.color.bg_panel_dark,
         .color_border = pixttf.theme.color.border_focus,
     });

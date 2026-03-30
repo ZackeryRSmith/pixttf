@@ -64,7 +64,7 @@ pub fn render(id: dvui.Id) !void {
     var title_font: dvui.Font = .theme(.title);
     title_font.size = 24;
 
-    var content = dvui.box(@src(), .{}, .{ .margin = .all(20) });
+    var content = dvui.box(@src(), .{}, .{ .margin = .all(20), .gravity_x = 0.5 });
     defer content.deinit();
 
     {
