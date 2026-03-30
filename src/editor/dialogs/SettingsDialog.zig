@@ -51,16 +51,10 @@ pub fn render(id: dvui.Id) !void {
     });
     defer back.deinit();
 
-    dvui.label(@src(), "There's an unsaved document. Are you sure you want to exit?", .{}, .{});
-    dvui.label(@src(), "Unsaved changes will be lost!", .{}, .{});
-
-    _ = dvui.separator(@src(), .{});
-
-    var hbox = dvui.box(@src(), .{ .dir = .horizontal }, .{});
-    defer hbox.deinit();
-
-    _ = dvui.button(@src(), "Exit", .{}, .{});
-    _ = dvui.button(@src(), "Cancel", .{}, .{});
+    dvui.label(@src(), "yeah nothing here right now come back later...", .{}, .{
+        .gravity_x = 0.5,
+        .gravity_y = 0.5,
+    });
 
     if (!showing.*) {
         dvui.dialogRemove(id);
