@@ -27,6 +27,12 @@ pub fn build(b: *std.Build) void {
     const assets_module = assetpack.pack(b, b.path("assets"), .{});
     exe.root_module.addImport("assets", assets_module);
 
+    const known_folders = b.dependency("known_folders", .{
+        .target = target,
+        .optimize = optimize,
+    }).module("known-folders");
+    exe.root_module.addImport("known-folders", known_folders);
+
     b.installArtifact(exe);
 
     const run_exe = b.addRunArtifact(exe);

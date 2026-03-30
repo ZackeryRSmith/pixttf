@@ -12,6 +12,10 @@
             .url = "git+https://github.com/foxnne/assetpack#40314c96819d53ba44c3cab1b2b71219004de829",
             .hash = "assetpack-0.1.0-5DA2d2VlAACfTN5RE7XvEVSPwr-a8IT2E58MFnONRXnP",
         },
+        .known_folders = .{
+            .url = "git+https://github.com/ziglibs/known-folders.git#83d39161eac2ed6f37ad3cb4d9dd518696ce90bb",
+            .hash = "known_folders-0.0.0-Fy-PJv3LAAABBRVoZWVrKZdyLoUfl5VRY5fqRRRdnF5L",
+        },
     },
     // TODO: likely have to add some extra paths here E.g. README.md
     .paths = .{
