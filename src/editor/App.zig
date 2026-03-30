@@ -49,12 +49,14 @@ pub fn init(window: *dvui.Window) !void {
     std.log.info("\t- pixelcode-extrabold-italic.ttf", .{});
     try dvui.addFont("pixelcode-extrabold-italic", pixttf.assets.files.fonts.@"pixelcode-extrabold-italic.ttf", null);
 
+    try dvui.addFont("juliamono", pixttf.assets.files.fonts.@"juliamono.ttf", null);
+
     std.log.info("loading theme classic_dark.json", .{});
     pixttf.theme = try Theme.fromJson(allocator, "assets/themes/classic_dark.json");
 
     // TODO: Theme should probably do this
     var default_font = dvui.Font.find(.{ .family = "pixelcode" });
-    default_font.size = 8;
+    default_font.size = 9;
     var bold_font = dvui.Font.find(.{ .family = "pixelcode-bold" });
     bold_font.size = 28;
 

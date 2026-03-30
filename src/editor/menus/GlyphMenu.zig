@@ -66,7 +66,7 @@ pub fn tick(glyph_menu: *GlyphMenu) !void {
             const byte_len = std.unicode.utf8Encode(pixttf.editor.active_codepoint, buf[0..4]) catch unreachable;
             const label: [:0]const u8 = buf[0..byte_len :0];
             if (dvui.labelClick(@src(), "{s}", .{label}, .{}, .{
-                .font = dvui.Font.find(.{ .family = "fallback" }).larger(12),
+                .font = dvui.Font.find(.{ .family = "juliamono" }).larger(12),
                 .gravity_x = 0.5,
                 .gravity_y = 0.5,
             })) {
