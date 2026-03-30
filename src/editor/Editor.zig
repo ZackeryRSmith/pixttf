@@ -146,7 +146,7 @@ pub fn switchGlyph(self: *Editor, codepoint: u21) !void {
     const result = try self.glyphs.getOrPut(codepoint);
     if (!result.found_existing) {
         result.value_ptr.* = Glyph{
-            .strokes = try std.ArrayList(PixelPosition).initCapacity(self.allocator, 10),
+            .strokes = try std.ArrayList(PixelPosition).initCapacity(self.allocator, 0),
         };
     }
     self.active_codepoint = codepoint;
