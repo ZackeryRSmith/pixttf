@@ -66,10 +66,13 @@ pub fn tick(self: *CharacterSetMenu) !void {
         &names,
         .{ .choice = &self.selected_idx },
         .{},
-        .{ .expand = .horizontal },
+        .{
+            .expand = .horizontal,
+            .color_fill = pixttf.theme.color.bg_panel,
+        },
     );
 
-    var scroll_area = dvui.scrollArea(@src(), .{}, .{ .expand = .horizontal });
+    var scroll_area = dvui.scrollArea(@src(), .{}, .{ .background = false, .expand = .horizontal });
     defer scroll_area.deinit();
 
     var flexbox = dvui.flexbox(@src(), .{}, .{});
@@ -86,9 +89,11 @@ pub fn tick(self: *CharacterSetMenu) !void {
         if (dvui.button(@src(), label, .{}, .{
             .id_extra = i,
             .min_size_content = .{ .w = 28, .h = 28 },
+            .color_fill = pixttf.theme.color.bg_panel,
         })) {
             // TODO: handle selected codepoint
             std.log.debug("selected codepoint U+{X:0>4}", .{cp});
+            try pixttf.editor.switchGlyph(cp);
         }
     }
 }
